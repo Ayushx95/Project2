@@ -29,18 +29,20 @@ namespace Project2.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Upsert(Student student)
         {
-            bool emailExists = _context.Students
-                .Any(s => s.Email == student.Email && s.Id != student.Id);
-
-            if (emailExists)
+            if (student == null)
+                return BadRequest();
+            if (!ModelState.IsValid)
+                return View(student);
+            var duplicateEmail = _context.Students
+                .FirstOrDefault(s =>
+                    s.Email == student.Email &&
+                    s.Id != student.Id);
+            if (duplicateEmail != null)
             {
                 ModelState.AddModelError(
                     "Email",
-                    "This Email is already Registered"
+                    "Email is already in use!"
                 );
-            }
-            if (!ModelState.IsValid)
-            {
                 return View(student);
             }
             if (student.Id == 0)
@@ -52,8 +54,9 @@ namespace Project2.Controllers
                 _context.Students.Update(student);
             }
             _context.SaveChanges();
-            return RedirectToAction("Index");
+            return RedirectToAction(nameof(Index));
         }
+
         public IActionResult Delete(int id, bool confirm = false)
         {
             var student = _context.Students.Find(id);

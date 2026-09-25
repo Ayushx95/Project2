@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Project2.Validations;
+using System.ComponentModel.DataAnnotations;
 
 namespace Project2.Models
 {
@@ -11,8 +12,8 @@ namespace Project2.Models
         [Required(ErrorMessage ="Address is Required")]
         [StringLength(50,MinimumLength =5,ErrorMessage ="Student Adress mus be between 5 to 50")]
         public string? Address { get; set; }
-        [Required(ErrorMessage = "Age is Required")]
-        [Range(5,20,ErrorMessage ="Age must be between 5 to 20")]
+        [Required]
+        [AgeValidation]
         public int Age { get; set; }
         [Required(ErrorMessage ="Email Address is Required")]
         [EmailAddress(ErrorMessage ="Please Enter a Valid Email Address")]
